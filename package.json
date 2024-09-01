@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@vueuse/core": "^11.0.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.437.0",
@@ -21,6 +22,7 @@
     "vue": "latest"
   },
   "devDependencies": {
+    "@nuxtjs/color-mode": "^3.4.4",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "typescript": "^5.5.4"
   }
