@@ -35,7 +35,8 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card v-for="business in filteredBusinesses" :key="business.id" class="bg-background rounded-lg shadow-sm">
-        <div class="relative">
+        <NuxtLink :to="`/business/${business.id}`">
+          <div class="relative">
           <img
             src="../assets/images/bocchi.jpg"
             :alt="business.name"
@@ -68,11 +69,11 @@
             <p class="text-muted-foreground text-sm col-span-9">{{business.phone}}</p>
           </div>
         </CardContent>
-        <CardFooter>
-          <NuxtLink :to="business.website" target="_blank" class="text-primary underline">
-            Visit Website
-          </NuxtLink>
+        <CardFooter class="flex justify-end items-center">
+          <ChevronRight />
         </CardFooter>
+        </NuxtLink>
+        
       </Card>
     </div>
   </div>
@@ -81,97 +82,11 @@
 <script setup>
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Badge from '@/components/ui/badge/Badge.vue';
-import { Phone, MapPinned, Clock3, BadgeCheck } from 'lucide-vue-next'
+import { useBusinesses } from '~/composables/dummy';
+import { Phone, MapPinned, Clock3, BadgeCheck, ChevronRight } from 'lucide-vue-next'
 
-const businesses = ref([
-  {
-    id: 1,
-    name: "Acme Plumbing",
-    description: "Professional plumbing services for residential and commercial properties.",
-    website: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    category: "Services",
-    image: "../assets/images/bocchi.jpg",
-    hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-    phone: "+60-123 4567",
-    location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-    status: 'Open'
-  },
-  {
-    id: 2,
-    name: "Bloom Florist",
-    description: "Locally sourced flowers and custom arrangements for all occasions.",
-    website: "https://www.bloomflorist.com",
-    category: "Retail",
-    image: "../assets/images/bocchi.jpg",
-    hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-    phone: "+60-123 4567",
-    location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-    status: "Closed"
-  },
-  {
-    id: 3,
-    name: "Cozy Cafe",
-    description: "Cozy neighborhood cafe serving fresh-brewed coffee and homemade pastries.",
-    website: "https://www.cozycafe.com",
-    category: "Food & Drink",
-    image: "../assets/images/bocchi.jpg",
-    phone: "+60-123 4567",
-    hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-    location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-    status: "Open"
-  },
-  {
-    id: 4,
-    name: "Fitness Emporium",
-    description: "Fully equipped gym with personal training and group fitness classes.",
-    website: "https://www.fitnessemporium.com",
-    category: "Services",
-    image: "../assets/images/bocchi.jpg",
-    phone: "+60-123 4567",
-    hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-    location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-    status: "Temporarily Closed"
-  },
-  {
-    id: 5,
-    name: "Green Thumb Nursery",
-    description: "Wide selection of plants, gardening supplies, and landscaping services.",
-    website: "https://www.greenthumb.com",
-    category: "Retail",
-    image: "../assets/images/bocchi.jpg",
-    phone: "+60-123 4567",
-    hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-    location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-    status: "Open"
-  },
-  {
-    id: 6,
-    name: "Harmony Yoga Studio",
-    description: "Peaceful studio offering a variety of yoga classes for all levels.",
-    website: "https://www.harmonyyoga.com",
-    category: "Services",
-    image: "../assets/images/bocchi.jpg",
-    phone: "+60-123 4567",
-    hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-    location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-    status: "Open"
-  },
-])
+const businesses = useBusinesses();
+const { selectedCategory, setSelectedCategory, filteredBusinesses } = useBusinesses();
 
-
-const selectedCategory = ref('all')
-
-const filteredBusinesses = computed(() => {
-  if (selectedCategory.value === 'all') {
-    return businesses.value
-  } else {
-    return businesses.value.filter((business) => business.category === selectedCategory.value)
-  }
-})
-
-// Function to change the selected category
-const setSelectedCategory = (category) => {
-  selectedCategory.value = category
-}
 
 </script>
