@@ -16,14 +16,13 @@
 </template>
 
 <script setup>
-import { useBusinesses } from '~/composables/dummy';
+import { useBusinessStore } from '~/stores/businesses';
 
-const route = useRoute()
-const router = useRouter();
-const { getBusinessById } = useBusinesses()
+import { useRoute } from 'vue-router';
 
-
-const business = computed(() => getBusinessById(route.params.id))
+const route = useRoute();
+const businessStore = useBusinessStore();
+const business = computed(() => businessStore.getBusinessById(route.params.id));
 
 //save for backend
 // const { data: business } = await useFetch(`/api/business/${route.params.id}`)
