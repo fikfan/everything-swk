@@ -6,9 +6,9 @@
         everything.kuching
       </div>
 
-      <Input type="email" placeholder="Search" v-if="showSearchInput" class="bg-black w-1/4 px-4" />
+      <Input type="email" placeholder="Search" v-if="showSearchInput" class="hidden bg-black w-1/4 px-4" />
 
-      <div class="flex gap-4 items-center">
+      <div class="hidden md:flex gap-4 items-center">
         
         <a href="#" class="hover:underline"><Github /></a>
         <NuxtLink to="/credits" class="hover:underline">Credits</NuxtLink>
