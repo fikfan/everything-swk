@@ -25,4 +25,9 @@ export default defineNuxtConfig({
   colorMode: {
     preference: 'dark',
   },
+  nitro: {
+    firebase: {
+      gen: 2
+    }
+  }
 })
