@@ -1,7 +1,7 @@
 // stores/businesses.js
 import { defineStore } from 'pinia';
 import { useNuxtApp } from '#app';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, getFirestore } from 'firebase/firestore';
 
 export const useBusinessStore = defineStore('businesses', {
   state: () => ({
@@ -17,53 +17,60 @@ export const useBusinessStore = defineStore('businesses', {
       } else {
         return state.businesses.filter(business => business.category === state.selectedCategory);
       }
+    },
+
+    getBusinessById: (state) => (id) => {
+      return state.businesses.find(business => business.id === id)
     }
+
   },
   actions: {
     // Fetch all businesses from Firestore
     async fetchBusinesses() {
-      const { $firestore } = useNuxtApp();
-      this.loading = true;
+      if (this.businesses.length > 0) return;
 
+      this.isLoading = true
       try {
-        const querySnapshot = await getDocs(collection($firestore, 'businesses'));
-        const businesses = [];
-
-        querySnapshot.forEach(doc => {
-          businesses.push({ id: doc.id, ...doc.data() });
-        });
-
-        this.businesses = businesses;
+        const { $firestore } = useNuxtApp()
+        if (!$firestore) {
+          return
+        }
+        const businessesCol = collection($firestore, 'businesses')
+        const businessSnapshot = await getDocs(businessesCol)
+        this.businesses = businessSnapshot.docs.map(doc => {
+          return {
+            id: doc.id,
+            ...doc.data()
+          }
+        })
       } catch (error) {
-        console.error("Error fetching businesses: ", error);
       } finally {
-        this.loading = false;
+        this.isLoading = false
       }
     },
-
     // Set the selected category for filtering
     setSelectedCategory(category) {
       this.selectedCategory = category;
     },
 
     // Fetch a specific business by ID from Firestore
-    async getBusinessById(id) {
-      const { $firestore } = useNuxtApp();
+    // async getBusinessById(id) {
+    //   const { $firestore } = useNuxtApp();
 
-      try {
-        const businessDoc = doc($firestore, 'businesses', id);
-        const businessSnap = await getDoc(businessDoc);
+    //   try {
+    //     const businessDoc = doc($firestore, 'businesses', id);
+    //     const businessSnap = await getDoc(businessDoc);
 
-        if (businessSnap.exists()) {
-          return { id: businessSnap.id, ...businessSnap.data() };
-        } else {
-          console.error("Business not found");
-          return null;
-        }
-      } catch (error) {
-        console.error("Error fetching business: ", error);
-        return null;
-      }
-    }
+    //     if (businessSnap.exists()) {
+    //       return { id: businessSnap.id, ...businessSnap.data() };
+    //     } else {
+    //       console.error("Business not found");
+    //       return null;
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching business: ", error);
+    //     return null;
+    //   }
+    // }
   }
 });

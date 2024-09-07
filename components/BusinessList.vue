@@ -3,8 +3,8 @@
     <Card v-for="business in businessStore.filteredBusinesses" :key="business.id" class="bg-background rounded-lg shadow-sm">
       <NuxtLink :to="`/business/${business.id}`">
         <div class="relative">
-        <img
-          src="../assets/images/bocchi.jpg"
+        <NuxtImg
+          :src="business.image ? business.image : '../assets/images/image-off.svg'"
           :alt="business.name"
           width="400"
           height="300"
@@ -47,9 +47,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone, MapPinned, Clock3, BadgeCheck, ChevronRight } from 'lucide-vue-next'
 import Badge from '@/components/ui/badge/Badge.vue';
-
 import { useBusinessStore } from '~/stores/businesses';
-
 const businessStore = useBusinessStore();
 
 </script>

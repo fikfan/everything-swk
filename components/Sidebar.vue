@@ -27,5 +27,4 @@ const router = useRouter();
 
 const businessStore = useBusinessStore();
 const business = computed(() => businessStore.getBusinessById(route.params.id));
-
 </script>
