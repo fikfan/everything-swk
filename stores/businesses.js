@@ -1,100 +1,69 @@
 // stores/businesses.js
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
+import { useNuxtApp } from '#app';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 
 export const useBusinessStore = defineStore('businesses', {
   state: () => ({
-    businesses: [
-      {
-        id: 1,
-        name: "Acme Plumbing",
-        description: "Professional plumbing services for residential and commercial properties.",
-        website: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        category: "Services",
-        image: "../assets/images/bocchi.jpg",
-        hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-        phone: "+60-123 4567",
-        location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-        status: 'Open'
-      },
-      {
-        id: 2,
-        name: "Bloom Florist",
-        description: "Locally sourced flowers and custom arrangements for all occasions.",
-        website: "https://www.bloomflorist.com",
-        category: "Retail",
-        image: "../assets/images/bocchi.jpg",
-        hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-        phone: "+60-123 4567",
-        location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-        status: "Closed"
-      },
-      {
-        id: 3,
-        name: "Cozy Cafe",
-        description: "Cozy neighborhood cafe serving fresh-brewed coffee and homemade pastries.",
-        website: "https://www.cozycafe.com",
-        category: "Food & Drink",
-        image: "../assets/images/bocchi.jpg",
-        phone: "+60-123 4567",
-        hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-        location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-        status: "Open"
-      },
-      {
-        id: 4,
-        name: "Fitness Emporium",
-        description: "Fully equipped gym with personal training and group fitness classes.",
-        website: "https://www.fitnessemporium.com",
-        category: "Services",
-        image: "../assets/images/bocchi.jpg",
-        phone: "+60-123 4567",
-        hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-        location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-        status: "Temporarily Closed"
-      },
-      {
-        id: 5,
-        name: "Green Thumb Nursery",
-        description: "Wide selection of plants, gardening supplies, and landscaping services.",
-        website: "https://www.greenthumb.com",
-        category: "Retail",
-        image: "../assets/images/bocchi.jpg",
-        phone: "+60-123 4567",
-        hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-        location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-        status: "Open"
-      },
-      {
-        id: 6,
-        name: "Harmony Yoga Studio",
-        description: "Peaceful studio offering a variety of yoga classes for all levels.",
-        website: "https://www.harmonyyoga.com",
-        category: "Services",
-        image: "../assets/images/bocchi.jpg",
-        phone: "+60-123 4567",
-        hours: "Mon-Fri: 8am-5pm, Sat: 9am-3pm",
-        location: "Level 1 & 2, Block 5, Saradise Edge, Lot 19844, 93350 Kuching",
-        status: "Open"
-      },
-    ],
+    businesses: [],
     categories: ['All', 'Services', 'Retail', 'Food & Drink'],
-    selectedCategory: 'All'
+    selectedCategory: 'All',
+    loading: false,
   }),
   getters: {
     filteredBusinesses: (state) => {
       if (state.selectedCategory === 'All') {
-        return state.businesses
+        return state.businesses;
       } else {
-        return state.businesses.filter(business => business.category === state.selectedCategory)
+        return state.businesses.filter(business => business.category === state.selectedCategory);
       }
     }
   },
   actions: {
-    setSelectedCategory(category) {
-      this.selectedCategory = category
+    // Fetch all businesses from Firestore
+    async fetchBusinesses() {
+      const { $firestore } = useNuxtApp();
+      this.loading = true;
+
+      try {
+        const querySnapshot = await getDocs(collection($firestore, 'businesses'));
+        const businesses = [];
+
+        querySnapshot.forEach(doc => {
+          businesses.push({ id: doc.id, ...doc.data() });
+        });
+
+        this.businesses = businesses;
+      } catch (error) {
+        console.error("Error fetching businesses: ", error);
+      } finally {
+        this.loading = false;
+      }
     },
-    getBusinessById(id) {
-      return this.businesses.find(business => business.id === parseInt(id))
+
+    // Set the selected category for filtering
+    setSelectedCategory(category) {
+      this.selectedCategory = category;
+    },
+
+    // Fetch a specific business by ID from Firestore
+    async getBusinessById(id) {
+      const { $firestore } = useNuxtApp();
+
+      try {
+        const businessDoc = doc($firestore, 'businesses', id);
+        const businessSnap = await getDoc(businessDoc);
+
+        if (businessSnap.exists()) {
+          return { id: businessSnap.id, ...businessSnap.data() };
+        } else {
+          console.error("Business not found");
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching business: ", error);
+        return null;
+      }
     }
   }
-})
+});
