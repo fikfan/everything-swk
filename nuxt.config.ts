@@ -12,7 +12,8 @@ export default defineNuxtConfig({
       firebaseStorageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
       firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
       firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
-      firebaseMeasurementId: process.env.NUXT_PUBLIC_MEASUREMENT_ID
+      firebaseMeasurementId: process.env.NUXT_PUBLIC_MEASUREMENT_ID,
+      googleMapsPlatformKey: process.env.NUXT_PUBLIC_MAPS_PLATFORM_KEY,
     }
   },
   devtools: { enabled: true },

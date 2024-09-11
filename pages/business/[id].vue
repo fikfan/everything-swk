@@ -49,21 +49,32 @@
 
 <script setup>
 import { useRoute } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useBusinessStore } from '~/stores/businesses';
+import { useRuntimeConfig } from '#app'
 
+//todo: optimise script
 const route = useRoute();
-const googleMapUrl = ref('');
-const loading = ref(true);
 const businessStore = useBusinessStore();
-
 const business = computed(() => businessStore.getBusinessById(route.params.id))
+const config = useRuntimeConfig();
+const urlCache = ref(new Map())
 
-// If you want to ensure the businesses are loaded, you can check and load if necessary
-onMounted( async () => {
+const googleMapUrl = computed(() => {
+  if (!business.value || !business.value.location) return ''
+  
+  const cacheKey = business.value.id
+  if (urlCache.value.has(cacheKey)) {
+    return urlCache.value.get(cacheKey)
+  }
+  const url = `https://www.google.com/maps/embed/v1/place?key=${config.public.googleMapsPlatformKey}&q=${encodeURIComponent(business.value.location)}`
+  urlCache.value.set(cacheKey, url)
+  return url
+})
+
+onMounted(async () => {
   if (businessStore.businesses.length === 0) {
     await businessStore.fetchBusinesses()
   }
-})
-
+});
 </script>

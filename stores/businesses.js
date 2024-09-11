@@ -1,6 +1,6 @@
 // stores/businesses.js
 import { defineStore } from 'pinia';
-import { useNuxtApp } from '#app';
+import { useNuxtApp, useRuntimeConfig } from '#app';
 import { collection, getDocs, doc, getDoc, getFirestore } from 'firebase/firestore';
 
 export const useBusinessStore = defineStore('businesses', {
@@ -9,6 +9,7 @@ export const useBusinessStore = defineStore('businesses', {
     categories: ['All', 'Services', 'Retail', 'Food & Drink'],
     selectedCategory: 'All',
     loading: false,
+    apiLoaded: false,
   }),
   getters: {
     filteredBusinesses: (state) => {
@@ -21,8 +22,7 @@ export const useBusinessStore = defineStore('businesses', {
 
     getBusinessById: (state) => (id) => {
       return state.businesses.find(business => business.id === id)
-    }
-
+    },
   },
   actions: {
     // Fetch all businesses from Firestore
@@ -52,25 +52,5 @@ export const useBusinessStore = defineStore('businesses', {
     setSelectedCategory(category) {
       this.selectedCategory = category;
     },
-
-    // Fetch a specific business by ID from Firestore
-    // async getBusinessById(id) {
-    //   const { $firestore } = useNuxtApp();
-
-    //   try {
-    //     const businessDoc = doc($firestore, 'businesses', id);
-    //     const businessSnap = await getDoc(businessDoc);
-
-    //     if (businessSnap.exists()) {
-    //       return { id: businessSnap.id, ...businessSnap.data() };
-    //     } else {
-    //       console.error("Business not found");
-    //       return null;
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching business: ", error);
-    //     return null;
-    //   }
-    // }
   }
 });
