@@ -9,6 +9,7 @@ export const useBusinessStore = defineStore('businesses', {
     categories: ['All', 'Services', 'Retail', 'Food & Drink'],
     selectedCategory: 'All',
     loading: false,
+    apiLoaded: false,
   }),
   getters: {
     filteredBusinesses: (state) => {
@@ -22,12 +23,6 @@ export const useBusinessStore = defineStore('businesses', {
     getBusinessById: (state) => (id) => {
       return state.businesses.find(business => business.id === id)
     },
-
-    googleMapUrl: (state) => {
-      if (!state.selectedBusiness || !state.apiKey) return ''
-      return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(state.selectedBusiness.location)}`;
-    }
-
   },
   actions: {
     // Fetch all businesses from Firestore
@@ -57,12 +52,5 @@ export const useBusinessStore = defineStore('businesses', {
     setSelectedCategory(category) {
       this.selectedCategory = category;
     },
-
-    //initialise api
-    initApiKey() {
-      const config = useRuntimeConfig()
-      this.apiKey = config.public.googleMapsApiKey
-    },
-
   }
 });
