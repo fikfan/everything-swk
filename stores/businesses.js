@@ -1,6 +1,6 @@
 // stores/businesses.js
 import { defineStore } from 'pinia';
-import { useNuxtApp } from '#app';
+import { useNuxtApp, useRuntimeConfig } from '#app';
 import { collection, getDocs, doc, getDoc, getFirestore } from 'firebase/firestore';
 
 export const useBusinessStore = defineStore('businesses', {
@@ -21,6 +21,11 @@ export const useBusinessStore = defineStore('businesses', {
 
     getBusinessById: (state) => (id) => {
       return state.businesses.find(business => business.id === id)
+    },
+
+    googleMapUrl: (state) => {
+      if (!state.selectedBusiness || !state.apiKey) return ''
+      return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(state.selectedBusiness.location)}`;
     }
 
   },
@@ -53,24 +58,11 @@ export const useBusinessStore = defineStore('businesses', {
       this.selectedCategory = category;
     },
 
-    // Fetch a specific business by ID from Firestore
-    // async getBusinessById(id) {
-    //   const { $firestore } = useNuxtApp();
+    //initialise api
+    initApiKey() {
+      const config = useRuntimeConfig()
+      this.apiKey = config.public.googleMapsApiKey
+    },
 
-    //   try {
-    //     const businessDoc = doc($firestore, 'businesses', id);
-    //     const businessSnap = await getDoc(businessDoc);
-
-    //     if (businessSnap.exists()) {
-    //       return { id: businessSnap.id, ...businessSnap.data() };
-    //     } else {
-    //       console.error("Business not found");
-    //       return null;
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching business: ", error);
-    //     return null;
-    //   }
-    // }
   }
 });

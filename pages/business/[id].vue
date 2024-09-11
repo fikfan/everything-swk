@@ -9,7 +9,7 @@
 
       <div class="bg-gray-700 dark:bg-gray-600 h-48 w-full rounded-lg mb-4 flex items-center justify-center">
         <iframe
-          :src="googleMapUrl"
+          :src="businessStore.googleMapUrl"
           width="100%"
           height="100%"
           style="border: 0px;"
@@ -51,18 +51,15 @@
 import { useRoute } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import { useBusinessStore } from '~/stores/businesses';
+import { useRuntimeConfig } from '#app'
+
 
 const route = useRoute();
 const businessStore = useBusinessStore();
-
 const business = computed(() => businessStore.getBusinessById(route.params.id))
 
-const googleMapUrl = computed(() => {
-  const apiKey = 'AIzaSyDCfpsuPP9KjgO5TymsDSxDrugkpliBA-Q';
-  return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(business.value.location)}`;
-})
-
 onMounted(async () => {
+  businessStore.initApiKey()
   if (businessStore.businesses.length === 0) {
     await businessStore.fetchBusinesses()
   }
