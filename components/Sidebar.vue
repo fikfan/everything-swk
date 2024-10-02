@@ -11,7 +11,11 @@
       >
         {{ category }}
       </Button>
+      <Button variant="outline" class="w-full justify-center">
+        Shoutout a business?
+      </Button>
     </nav>
+    
     <nav v-else class="p-2 space-y-2">
       <Button variant="ghost" @click="$router.back()" class="w-full justify-start">Back to directory</Button>
     </nav>
