@@ -4,7 +4,7 @@
       <NuxtLink :to="`/business/${business.id}`">
         <div class="relative">
           <NuxtImg
-            :src="business.image ? business.image : `https://placehold.co/400x300?text=${business.name}.png`"
+            :src="business.image ? business.image : `https://placehold.co/400x300?text=${business.name}`"
             :alt="business.name"
             width="400"
             height="300"
