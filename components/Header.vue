@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header class="border-b">
     <div class="px-6 py-2 flex justify-between bg-black items-center text-white min-h-[55px]">
 
       <div class="font-mono">
