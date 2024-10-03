@@ -14,42 +14,42 @@
       </DialogHeader>
       <div class="grid gap-4">
         <div>
-          <Label class="text-right mb-2">
+          <Label for="name" class="text-right mb-2">
             Name
           </Label>
           <Input v-model="businessName" />
         </div>
         
         <div>
-          <Label class="text-right mb-2">
+          <Label for="category" class="text-right mb-2">
             Category
           </Label>
           <Input v-model="businessCategory"  />
         </div>
 
         <div> 
-          <Label class="text-right mb-2">
+          <Label for="phone" class="text-right mb-2">
             Phone
           </Label>
           <Input v-model="businessPhone"  />
         </div>
 
         <div>
-          <Label class="text-right mb-2">
+          <Label for="hours" class="text-right mb-2">
             Hours
           </Label>
           <Input v-model="businessHours" />
         </div>
 
         <div>
-          <Label class="text-right mb-2">
+          <Label for="location" class="text-right mb-2">
             Location
           </Label>
           <Input v-model="businessLocation"  />
         </div>
 
         <div>
-          <Label class="text-right mb-2">
+          <Label for="secret" class="text-right mb-2">
             Secret Password
           </Label>
           <Input type="password" v-model="secretPassword" placeholder="Enter secret key.."></Input>
@@ -60,7 +60,7 @@
       <DialogFooter>
         <div class="flex justify-center gap-2">
           <Button variant="destructive" @click="clearForm">Clear</Button>
-          <Button class="w-fit">
+          <Button class="w-fit" :variant="isValidPassword ? '' : 'secondary'" :disabled="!isValidPassword">
             Submit
           </Button>
         </div>
@@ -84,12 +84,14 @@ import {
 } from '@/components/ui/dialog'
 
 
+
 const businessName = ref('');
 const businessCategory = ref('');
 const businessHours = ref('');
 const businessLocation = ref('');
 const businessPhone = ref('');
 const secretPassword = ref('');
+
 
 const clearForm = () => {
   businessName.value = ''
@@ -99,5 +101,10 @@ const clearForm = () => {
   businessPhone.value = ''
   secretPassword.value = ''
 }
+
+// secret key
+const config = useRuntimeConfig();
+const secret = String(config.public.secretKey);
+const isValidPassword = computed(() => secretPassword.value === secret)
 
 </script>
